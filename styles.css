@@ -117,7 +117,7 @@ button.secondary { background: rgba(255, 255, 255, .2); border: 1px solid rgba(2
   gap: .45rem;
   margin-top: .8rem;
 }
-.actions button:nth-child(6) { background: var(--danger); }
+.actions button:last-child { background: var(--danger); }
 pre {
   background: #0f172a;
   color: #e2e8f0;
@@ -143,3 +143,8 @@ footer {
   .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+#wineCollectionList { margin: .4rem 0 .9rem; padding-left: 1.2rem; }
+#wineCollectionList li { margin-bottom: .3rem; }
+#pairingBtn { margin-top: .5rem; }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#111827" />
-    <meta name="description" content="Fromage Society SA mobile progressive web app for cheese and wine memberships." />
+    <meta name="description" content="Fromage Society SA mobile progressive web app for cheese memberships and wine pairing intelligence." />
     <title>Fromage Society SA</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/icon-192.svg" type="image/svg+xml" />
@@ -14,7 +14,7 @@
     <header class="topbar">
       <div>
         <p class="brand">Fromage Society SA</p>
-        <h1>Cheese & Wine Club</h1>
+        <h1>Starter Cheese Club</h1>
       </div>
       <button id="installBtn" class="secondary" hidden>Install</button>
     </header>
@@ -23,6 +23,7 @@
       <a href="#home">Home</a>
       <a href="#membership">Membership</a>
       <a href="#this-month">This Month</a>
+      <a href="#mobile-app">Mobile App</a>
       <a href="#how-it-works">How It Works</a>
       <a href="#faq">FAQ</a>
       <a href="#account">Account</a>
@@ -32,20 +33,20 @@
 
     <main>
       <section id="home" class="panel hero">
-        <h2>A monthly cheese ritual, built for South Africa.</h2>
-        <p>Start with Cape Town + Winelands delivery, run monthly cadence, and scale with cold-chain logistics and compliance-first operations.</p>
+        <h2>Cheese-only delivery with smart wine pairing guidance.</h2>
+        <p>Start with one starter tier for operational simplicity while still giving members rich wine pairing information and AI-assisted recommendations.</p>
         <div class="chips">
-          <span>3 membership tiers</span>
-          <span>Recurring-ready payments</span>
-          <span>Static GitHub hosting</span>
+          <span>1 starter tier</span>
+          <span>Cheese-only delivery</span>
+          <span>Wine pairing guidance</span>
           <span>PWA install + offline</span>
         </div>
       </section>
 
       <section id="membership" class="panel">
         <div class="section-heading">
-          <h2>Membership tiers</h2>
-          <p>Customers self-segment with clear value and price anchors.</p>
+          <h2>Membership tier</h2>
+          <p>Single plan to keep fulfilment lean at launch.</p>
         </div>
         <div id="plansGrid" class="grid"></div>
       </section>
@@ -53,7 +54,7 @@
       <section id="this-month" class="panel">
         <div class="section-heading">
           <h2>This month’s box</h2>
-          <p>Built using hero / crowd pleaser / wildcard framework.</p>
+          <p>Cheese-first curation with wine pairing notes.</p>
         </div>
         <article class="month-box">
           <h3 id="boxTitle"></h3>
@@ -61,19 +62,53 @@
         </article>
       </section>
 
+      <section id="mobile-app" class="panel">
+        <div class="section-heading">
+          <h2>Mobile app: Wine collection + AI pairings</h2>
+          <p>Add bottles you already own, then ask an LLM for cheese pairing ideas.</p>
+        </div>
+
+        <form id="wineCollectionForm" class="stack">
+          <label>Wine name
+            <input type="text" name="wine_name" placeholder="e.g. Ken Forrester Old Vine Reserve" required />
+          </label>
+          <label>Style
+            <select name="wine_style" required>
+              <option value="white">White</option>
+              <option value="red">Red</option>
+              <option value="rose">Rosé</option>
+              <option value="sparkling">Sparkling</option>
+              <option value="dessert">Dessert</option>
+            </select>
+          </label>
+          <label>Vintage
+            <input type="text" name="wine_vintage" placeholder="e.g. 2022" />
+          </label>
+          <label>Tasting notes
+            <input type="text" name="wine_notes" placeholder="e.g. citrus, minerality" />
+          </label>
+          <button type="submit">Add to collection</button>
+        </form>
+
+        <h3>Your wine collection</h3>
+        <ul id="wineCollectionList"></ul>
+
+        <button id="pairingBtn" type="button">Get AI cheese pairings</button>
+        <p id="llmStatus" class="small">LLM status: waiting</p>
+        <pre id="pairingOutput">Pairings will appear here.</pre>
+      </section>
+
       <section id="how-it-works" class="panel">
         <h2>How it works</h2>
         <ol>
-          <li>Choose tier: Cheese Club, Cheese + Wine Club, or Cellar Select.</li>
-          <li>Set preferences: red / white / mixed, cheese style, allergens.</li>
+          <li>Subscribe to the starter Cheese Club plan.</li>
+          <li>Set your cheese and wine-style preferences for guidance notes.</li>
           <li>Add delivery details and subscribe via SA recurring gateway.</li>
-          <li>Receive monthly chilled delivery with tasting + pairing notes.</li>
-          <li>Manage skip, pause, upgrade, gifting, and address updates anytime.</li>
+          <li>Receive monthly chilled cheese delivery with pairing notes.</li>
+          <li>Use the mobile app section to track your wines and generate AI pairing suggestions.</li>
         </ol>
         <h3>Payments (SA recurring options)</h3>
         <p>Recommended providers: PayFast Subscriptions, Peach Payments recurring, or Paystack recurring APIs.</p>
-        <h3>Launch path to reduce risk</h3>
-        <p>Launch Cheese Club first (non-alcohol fulfilment), then add licensed wine partner add-ons before taking in-house liquor operations.</p>
       </section>
 
       <section id="faq" class="panel">
@@ -81,7 +116,7 @@
         <details><summary>Can I skip or pause?</summary><p>Yes, before billing date in Account. Pause updates <code>pause_until</code>.</p></details>
         <details><summary>Can I gift membership?</summary><p>Yes, gift one month from the member portal actions.</p></details>
         <details><summary>What about allergens?</summary><p>Set allergen preferences; every monthly box also includes ingredient labeling references.</p></details>
-        <details><summary>How is age verification handled?</summary><p>Wine options require 18+ attestation at checkout and ID check on delivery.</p></details>
+        <details><summary>Does delivery include wine?</summary><p>No. Delivery is cheese-only. Wine information and pairing suggestions are digital guidance only.</p></details>
       </section>
 
       <section id="account" class="panel">
@@ -90,11 +125,11 @@
           <label>Membership plan
             <select name="plan" required></select>
           </label>
-          <label>Wine preference
+          <label>Wine preference (for pairing notes)
             <select name="wine_pref">
               <option value="mixed">Mixed</option>
-              <option value="red">Red month</option>
-              <option value="white">White month</option>
+              <option value="red">Red leaning</option>
+              <option value="white">White leaning</option>
             </select>
           </label>
           <label>Cheese preference
@@ -106,17 +141,12 @@
           <label>Address
             <textarea name="address" required placeholder="Street, suburb, city, postal code"></textarea>
           </label>
-          <label class="inline">
-            <input type="checkbox" name="age18" required />
-            I confirm I am 18+ for any alcohol-related options.
-          </label>
           <button type="submit">Start subscription</button>
         </form>
 
         <div class="actions">
           <button data-action="skip" type="button">Skip next month</button>
           <button data-action="pause" type="button">Pause 1 month</button>
-          <button data-action="upgrade" type="button">Upgrade to Cellar Select</button>
           <button data-action="address" type="button">Change address</button>
           <button data-action="gift" type="button">Gift one month</button>
           <button data-action="cancel" type="button">Cancel subscription</button>
@@ -135,7 +165,7 @@
               <input type="text" name="month" placeholder="e.g. April 2026" required />
             </label>
             <label>Items (one per line)
-              <textarea name="items" placeholder="Hero: ...&#10;Crowd pleaser: ...&#10;Wildcard: ..." required></textarea>
+              <textarea name="items" placeholder="Hero: ...&#10;Crowd pleaser: ...&#10;Wine guidance: ..." required></textarea>
             </label>
             <button type="submit">Save monthly box</button>
           </form>
@@ -159,16 +189,6 @@
         <h2>Legal & compliance</h2>
 
         <article>
-          <h3>Liquor (if wine is included)</h3>
-          <ul>
-            <li>Use valid provincial off-consumption liquor licensing.</li>
-            <li>Ensure online/telephone fulfilment rules align with licence conditions.</li>
-            <li>Record invoices, deliver to invoiced address, retain records.</li>
-            <li>Enforce 18+ verification and delivery ID checks.</li>
-          </ul>
-        </article>
-
-        <article>
           <h3>Food handling (perishable cheese)</h3>
           <ul>
             <li>Maintain Certificate of Acceptability requirements for food handling.</li>
@@ -186,12 +206,12 @@
           <p>Perishable products are non-returnable unless damaged, unsafe, or incorrect on delivery. Report issues within 24 hours.</p>
         </article>
 
-        <p class="small">Informational content only and not legal advice; verify with legal counsel and provincial regulators.</p>
+        <p class="small">Wine pairing details and AI recommendations are informational and not a substitute for professional advice.</p>
       </section>
     </main>
 
     <footer>
-      <p>Fromage Society SA • Static PWA deployable on GitHub Pages</p>
+      <p>Fromage Society SA • Starter Cheese Club PWA</p>
     </footer>
 
     <script type="module" src="app.js"></script>

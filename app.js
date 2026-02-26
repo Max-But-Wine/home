@@ -1,4 +1,4 @@
-const STORAGE_KEY = "fromage-club-db-v2";
+const STORAGE_KEY = "fromage-club-db-v3";
 
 const defaultState = {
   users: [],
@@ -14,33 +14,7 @@ const defaultState = {
         "1–2 accompaniments (crackers/chutney/fruit paste)",
         "Digital tasting notes + wine pairing guide"
       ],
-      bestFor: "People who already have wine at home"
-    },
-    {
-      id: "cheese_wine",
-      name: "Cheese + Wine Club",
-      tier: "core",
-      priceRange: "R1,199–R1,699",
-      cadence: "monthly",
-      includes: [
-        "Everything in Cheese Club",
-        "2 bottles (or 1 premium bottle)",
-        "Red / White / Mixed month preference"
-      ],
-      bestFor: "Customers wanting complete pairings"
-    },
-    {
-      id: "cellar",
-      name: "Cellar Select",
-      tier: "premium",
-      priceRange: "R2,199–R3,499",
-      cadence: "monthly",
-      includes: [
-        "Rarer cheeses + limited-release wines",
-        "Quarterly tasting invitation",
-        "Early access drops + member-only pricing"
-      ],
-      bestFor: "Collectors and gifting-heavy members"
+      bestFor: "People who want cheese-only delivery with wine pairing insights"
     }
   ],
   subscriptions: [],
@@ -54,9 +28,11 @@ const defaultState = {
       "Crowd pleaser: Mature cheddar wedge",
       "Wildcard: Smoked goat log",
       "Accompaniments: Seeded crackers + fig preserve",
-      "Pairing: Chenin Blanc / MCC / Pinotage"
+      "Wine guidance: Chenin Blanc / MCC / Pinotage"
     ]
   },
+  wineCollection: [],
+  pairingHistory: [],
   fulfillment: [],
   complianceFlags: [],
   churnEvents: []
@@ -75,7 +51,12 @@ const dom = {
   packingListBtn: document.querySelector("#packingListBtn"),
   labelsBtn: document.querySelector("#labelsBtn"),
   downloadLink: document.querySelector("#downloadLink"),
-  installBtn: document.querySelector("#installBtn")
+  installBtn: document.querySelector("#installBtn"),
+  wineCollectionForm: document.querySelector("#wineCollectionForm"),
+  wineCollectionList: document.querySelector("#wineCollectionList"),
+  pairingBtn: document.querySelector("#pairingBtn"),
+  pairingOutput: document.querySelector("#pairingOutput"),
+  llmStatus: document.querySelector("#llmStatus")
 };
 
 function loadState() {
@@ -131,6 +112,23 @@ function renderBox() {
   });
 }
 
+function renderWineCollection() {
+  dom.wineCollectionList.innerHTML = "";
+
+  if (!state.wineCollection.length) {
+    const li = document.createElement("li");
+    li.textContent = "No wines added yet. Add your first bottle to get pairings.";
+    dom.wineCollectionList.append(li);
+    return;
+  }
+
+  state.wineCollection.forEach((wine) => {
+    const li = document.createElement("li");
+    li.textContent = `${wine.name} (${wine.style}) • ${wine.vintage || "NV"}`;
+    dom.wineCollectionList.append(li);
+  });
+}
+
 function getActiveSubscription() {
   return state.subscriptions.find((sub) => sub.status !== "cancelled") || null;
 }
@@ -150,8 +148,8 @@ function recomputeAdminMetrics() {
   const cancelled = subs.filter((s) => s.status === "cancelled").length;
 
   dom.segments.innerHTML = `
-    <li>Red lovers: <strong>${redFans}</strong></li>
-    <li>Mixed-pref members: <strong>${mixed}</strong></li>
+    <li>Red-pref pairing readers: <strong>${redFans}</strong></li>
+    <li>Mixed-pref pairing readers: <strong>${mixed}</strong></li>
     <li>Goat-cheese fans: <strong>${goatFans}</strong></li>
     <li>Active members: <strong>${active}</strong> • Paused: <strong>${paused}</strong></li>
   `;
@@ -193,16 +191,10 @@ function submitSubscription(event) {
     address_line: fd.get("address")
   });
 
-  state.complianceFlags.push({
-    user_id: userId,
-    age18_confirmed: fd.get("age18") === "on",
-    id_checked_at_delivery: false
-  });
-
   state.subscriptions.push({
     id: subscriptionId,
     user_id: userId,
-    plan_id: fd.get("plan"),
+    plan_id: "cheese",
     status: "active",
     next_bill_date: nextBillDate(),
     pause_until: null,
@@ -243,11 +235,6 @@ function mutateSubscription(action) {
     d.setMonth(d.getMonth() + 1);
     sub.status = "paused";
     sub.pause_until = d.toISOString().slice(0, 10);
-  }
-
-  if (action === "upgrade") {
-    sub.plan_id = "cellar";
-    sub.status = "active";
   }
 
   if (action === "address") {
@@ -310,12 +297,104 @@ function exportPackingList() {
 }
 
 function exportDeliveryLabels() {
-  const rows = [["subscription_id", "address", "requires_age_verification", "delivery_window"]];
+  const rows = [["subscription_id", "address", "delivery_window"]];
   state.subscriptions.forEach((sub) => {
-    const compliance = state.complianceFlags.find((flag) => flag.user_id === sub.user_id);
-    rows.push([sub.id, sub.address, compliance ? compliance.age18_confirmed : false, "09:00-17:00"]);
+    rows.push([sub.id, sub.address, "09:00-17:00"]);
   });
   triggerDownload("delivery-labels.csv", toCsv(rows));
+}
+
+function addWineToCollection(event) {
+  event.preventDefault();
+  const fd = new FormData(dom.wineCollectionForm);
+
+  state.wineCollection.push({
+    id: crypto.randomUUID(),
+    name: String(fd.get("wine_name")),
+    style: String(fd.get("wine_style")),
+    vintage: String(fd.get("wine_vintage") || ""),
+    notes: String(fd.get("wine_notes") || "")
+  });
+
+  persist();
+  dom.wineCollectionForm.reset();
+  renderWineCollection();
+}
+
+function fallbackPairings() {
+  const styleToCheese = {
+    red: ["Aged cheddar", "Gouda", "Smoked provolone"],
+    white: ["Brie", "Camembert", "Goat cheese"],
+    rose: ["Feta", "Havarti", "Young cheddar"],
+    sparkling: ["Parmesan", "Gruyère", "Triple cream brie"],
+    dessert: ["Blue cheese", "Gorgonzola", "Mascarpone"]
+  };
+
+  return state.wineCollection.map((wine) => {
+    const cheese = styleToCheese[wine.style] || ["Farmhouse cheddar", "Brie"];
+    return {
+      wine: wine.name,
+      suggestion: `${wine.name}: try ${cheese.slice(0, 2).join(" + ")} and add fig preserve.`
+    };
+  });
+}
+
+async function requestCheesePairingsFromLLM() {
+  const payload = {
+    instructions: "Suggest concise cheese pairings for each wine. Return JSON array with wine and suggestion.",
+    wines: state.wineCollection
+  };
+
+  const response = await fetch("/api/llm/pairings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error(`LLM API request failed with status ${response.status}`);
+  }
+
+  const data = await response.json();
+  if (!Array.isArray(data.pairings)) {
+    throw new Error("Invalid LLM response shape");
+  }
+
+  return data.pairings;
+}
+
+async function generatePairings() {
+  if (!state.wineCollection.length) {
+    dom.pairingOutput.textContent = "Add at least one wine to generate pairings.";
+    return;
+  }
+
+  dom.pairingBtn.disabled = true;
+  dom.pairingBtn.textContent = "Generating...";
+
+  let pairings;
+
+  try {
+    pairings = await requestCheesePairingsFromLLM();
+    dom.llmStatus.textContent = "LLM status: connected to /api/llm/pairings";
+  } catch {
+    pairings = fallbackPairings();
+    dom.llmStatus.textContent = "LLM status: offline fallback (configure /api/llm/pairings to enable live model output).";
+  }
+
+  state.pairingHistory = [
+    {
+      generated_at: new Date().toISOString(),
+      pairings
+    },
+    ...state.pairingHistory
+  ].slice(0, 5);
+
+  dom.pairingOutput.textContent = pairings.map((item) => `• ${item.suggestion}`).join("\n");
+
+  persist();
+  dom.pairingBtn.disabled = false;
+  dom.pairingBtn.textContent = "Get AI cheese pairings";
 }
 
 function setupEvents() {
@@ -323,6 +402,8 @@ function setupEvents() {
   dom.boxBuilder.addEventListener("submit", saveMonthlyBox);
   dom.packingListBtn.addEventListener("click", exportPackingList);
   dom.labelsBtn.addEventListener("click", exportDeliveryLabels);
+  dom.wineCollectionForm.addEventListener("submit", addWineToCollection);
+  dom.pairingBtn.addEventListener("click", generatePairings);
 
   document.querySelectorAll(".actions button").forEach((button) => {
     button.addEventListener("click", () => mutateSubscription(button.dataset.action));
@@ -355,6 +436,7 @@ function refreshAll() {
   setSubscriptionView();
   recomputeAdminMetrics();
   renderBox();
+  renderWineCollection();
 }
 
 function init() {

@@ -1,6 +1,6 @@
 # Fromage Society SA PWA
 
-A complete, mobile-first progressive web app for a South African cheese & wine membership business.
+A complete, mobile-first progressive web app for a South African **starter cheese membership** with digital wine pairing intelligence.
 
 ## Will this work on GitHub Pages?
 
@@ -28,19 +28,23 @@ Yes. This repository is plain static HTML/CSS/JS, so it works on GitHub Pages.
 
 ## Features included
 
-- Membership product with 3 tiers:
+- Membership product with **1 tier only**:
   - Cheese Club (starter)
-  - Cheese + Wine Club (core)
-  - Cellar Select (premium)
+- Cheese-only monthly delivery with digital wine pairing notes.
+- Built-in mobile app section to:
+  - add a personal wine collection,
+  - request cheese pairings from an LLM endpoint (`/api/llm/pairings`),
+  - gracefully fallback to local pairing rules when offline/unconfigured.
 - MVP sections:
   - Home
-  - Membership compare
+  - Membership
   - This month teaser
+  - Mobile app pairing tool
   - How it works
   - FAQ
   - Account / member portal
   - Admin tools
-  - Legal (T&Cs / POPIA privacy / returns / compliance)
+  - Legal (food handling / POPIA / returns)
 - PWA capabilities:
   - Web manifest
   - Service worker caching
