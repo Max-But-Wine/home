@@ -1,11 +1,11 @@
 {
-  "name": "Fromage Society SA",
-  "short_name": "Fromage SA",
+  "name": "Cellar & Rind",
+  "short_name": "CellarRind",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#1f2937",
-  "description": "Mobile-first starter cheese membership app with wine pairing intelligence.",
+  "background_color": "#f9f6f1",
+  "theme_color": "#6b2f2f",
+  "description": "A personal wine and cheese blog with pairing notes and cellar stories.",
   "icons": [
     {
       "src": "assets/icon-192.svg",

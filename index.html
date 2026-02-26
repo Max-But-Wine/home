@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en-ZA">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#111827" />
-    <meta name="description" content="Fromage Society SA mobile progressive web app for cheese memberships and wine pairing intelligence." />
-    <title>Fromage Society SA</title>
+    <meta name="theme-color" content="#6b2f2f" />
+    <meta name="description" content="A personal blog about wine, cheese, and easy pairing ideas." />
+    <title>Cellar & Rind — A Wine and Cheese Blog</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/icon-192.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
@@ -13,205 +13,96 @@
   <body>
     <header class="topbar">
       <div>
-        <p class="brand">Fromage Society SA</p>
-        <h1>Starter Cheese Club</h1>
+        <p class="brand">Cellar & Rind</p>
+        <h1>My personal wine and cheese journal</h1>
       </div>
       <button id="installBtn" class="secondary" hidden>Install</button>
     </header>
 
     <nav class="tabs" aria-label="Main sections">
       <a href="#home">Home</a>
-      <a href="#membership">Membership</a>
-      <a href="#this-month">This Month</a>
-      <a href="#mobile-app">Mobile App</a>
-      <a href="#how-it-works">How It Works</a>
-      <a href="#faq">FAQ</a>
-      <a href="#account">Account</a>
-      <a href="#admin">Admin</a>
-      <a href="#legal">Legal</a>
+      <a href="#posts">Posts</a>
+      <a href="#pairing-lab">Pairing Lab</a>
+      <a href="#notes">Cellar Notes</a>
+      <a href="#subscribe">Subscribe</a>
     </nav>
 
     <main>
       <section id="home" class="panel hero">
-        <h2>Cheese-only delivery with smart wine pairing guidance.</h2>
-        <p>Start with one starter tier for operational simplicity while still giving members rich wine pairing information and AI-assisted recommendations.</p>
+        <h2>Stories from my table, cellar, and cheeseboard.</h2>
+        <p>
+          I write tasting stories, pairing experiments, and simple guides that help you choose a bottle and a wedge with confidence.
+        </p>
         <div class="chips">
-          <span>1 starter tier</span>
-          <span>Cheese-only delivery</span>
-          <span>Wine pairing guidance</span>
-          <span>PWA install + offline</span>
+          <span>Weekly tasting posts</span>
+          <span>Seasonal pairing ideas</span>
+          <span>Beginner-friendly notes</span>
+          <span>PWA install + offline reading</span>
         </div>
       </section>
 
-      <section id="membership" class="panel">
+      <section id="posts" class="panel">
         <div class="section-heading">
-          <h2>Membership tier</h2>
-          <p>Single plan to keep fulfilment lean at launch.</p>
+          <h2>Latest posts</h2>
+          <p>Fresh writing from the vineyard and the cheese cave.</p>
         </div>
-        <div id="plansGrid" class="grid"></div>
+        <div id="postGrid" class="grid"></div>
       </section>
 
-      <section id="this-month" class="panel">
+      <section id="pairing-lab" class="panel">
         <div class="section-heading">
-          <h2>This month’s box</h2>
-          <p>Cheese-first curation with wine pairing notes.</p>
-        </div>
-        <article class="month-box">
-          <h3 id="boxTitle"></h3>
-          <ul id="boxItems"></ul>
-        </article>
-      </section>
-
-      <section id="mobile-app" class="panel">
-        <div class="section-heading">
-          <h2>Mobile app: Wine collection + AI pairings</h2>
-          <p>Add bottles you already own, then ask an LLM for cheese pairing ideas.</p>
+          <h2>Pairing Lab</h2>
+          <p>Pick a wine style and cheese type to get a quick pairing suggestion.</p>
         </div>
 
-        <form id="wineCollectionForm" class="stack">
-          <label>Wine name
-            <input type="text" name="wine_name" placeholder="e.g. Ken Forrester Old Vine Reserve" required />
-          </label>
-          <label>Style
-            <select name="wine_style" required>
-              <option value="white">White</option>
-              <option value="red">Red</option>
-              <option value="rose">Rosé</option>
+        <form id="pairingForm" class="stack">
+          <label>Wine style
+            <select name="wineStyle" required>
               <option value="sparkling">Sparkling</option>
+              <option value="white">White</option>
+              <option value="rose">Rosé</option>
+              <option value="red">Red</option>
               <option value="dessert">Dessert</option>
             </select>
           </label>
-          <label>Vintage
-            <input type="text" name="wine_vintage" placeholder="e.g. 2022" />
-          </label>
-          <label>Tasting notes
-            <input type="text" name="wine_notes" placeholder="e.g. citrus, minerality" />
-          </label>
-          <button type="submit">Add to collection</button>
-        </form>
-
-        <h3>Your wine collection</h3>
-        <ul id="wineCollectionList"></ul>
-
-        <button id="pairingBtn" type="button">Get AI cheese pairings</button>
-        <p id="llmStatus" class="small">LLM status: waiting</p>
-        <pre id="pairingOutput">Pairings will appear here.</pre>
-      </section>
-
-      <section id="how-it-works" class="panel">
-        <h2>How it works</h2>
-        <ol>
-          <li>Subscribe to the starter Cheese Club plan.</li>
-          <li>Set your cheese and wine-style preferences for guidance notes.</li>
-          <li>Add delivery details and subscribe via SA recurring gateway.</li>
-          <li>Receive monthly chilled cheese delivery with pairing notes.</li>
-          <li>Use the mobile app section to track your wines and generate AI pairing suggestions.</li>
-        </ol>
-        <h3>Payments (SA recurring options)</h3>
-        <p>Recommended providers: PayFast Subscriptions, Peach Payments recurring, or Paystack recurring APIs.</p>
-      </section>
-
-      <section id="faq" class="panel">
-        <h2>FAQ</h2>
-        <details><summary>Can I skip or pause?</summary><p>Yes, before billing date in Account. Pause updates <code>pause_until</code>.</p></details>
-        <details><summary>Can I gift membership?</summary><p>Yes, gift one month from the member portal actions.</p></details>
-        <details><summary>What about allergens?</summary><p>Set allergen preferences; every monthly box also includes ingredient labeling references.</p></details>
-        <details><summary>Does delivery include wine?</summary><p>No. Delivery is cheese-only. Wine information and pairing suggestions are digital guidance only.</p></details>
-      </section>
-
-      <section id="account" class="panel">
-        <h2>Account & subscription</h2>
-        <form id="subscriptionForm" class="stack">
-          <label>Membership plan
-            <select name="plan" required></select>
-          </label>
-          <label>Wine preference (for pairing notes)
-            <select name="wine_pref">
-              <option value="mixed">Mixed</option>
-              <option value="red">Red leaning</option>
-              <option value="white">White leaning</option>
+          <label>Cheese family
+            <select name="cheeseType" required>
+              <option value="bloomy">Bloomy rind</option>
+              <option value="goat">Fresh goat</option>
+              <option value="hard">Hard aged</option>
+              <option value="blue">Blue</option>
+              <option value="washed">Washed rind</option>
             </select>
           </label>
-          <label>Cheese preference
-            <input type="text" name="cheese_pref" placeholder="e.g. goat friendly, no blue" />
-          </label>
-          <label>Allergens
-            <input type="text" name="allergens" placeholder="e.g. gluten, nuts" />
-          </label>
-          <label>Address
-            <textarea name="address" required placeholder="Street, suburb, city, postal code"></textarea>
-          </label>
-          <button type="submit">Start subscription</button>
+          <button type="submit">Suggest a pairing</button>
         </form>
 
-        <div class="actions">
-          <button data-action="skip" type="button">Skip next month</button>
-          <button data-action="pause" type="button">Pause 1 month</button>
-          <button data-action="address" type="button">Change address</button>
-          <button data-action="gift" type="button">Gift one month</button>
-          <button data-action="cancel" type="button">Cancel subscription</button>
-        </div>
-
-        <h3>Current subscription JSON</h3>
-        <pre id="subscriptionView">No subscription yet.</pre>
+        <pre id="pairingOutput">Choose options above to generate a pairing idea.</pre>
       </section>
 
-      <section id="admin" class="panel">
-        <h2>Admin tools</h2>
-        <div class="admin-grid">
-          <form id="boxBuilder" class="stack">
-            <h3>Build this month’s box</h3>
-            <label>Month label
-              <input type="text" name="month" placeholder="e.g. April 2026" required />
-            </label>
-            <label>Items (one per line)
-              <textarea name="items" placeholder="Hero: ...&#10;Crowd pleaser: ...&#10;Wine guidance: ..." required></textarea>
-            </label>
-            <button type="submit">Save monthly box</button>
-          </form>
-
-          <div class="stack">
-            <h3>Operations exports</h3>
-            <button id="packingListBtn" type="button">Export packing list CSV</button>
-            <button id="labelsBtn" type="button">Export delivery labels CSV</button>
-            <a id="downloadLink" hidden></a>
-
-            <h3>Member segmentation</h3>
-            <ul id="segments"></ul>
-
-            <h3>Churn dashboard</h3>
-            <p id="churnSummary">No data yet.</p>
-          </div>
-        </div>
+      <section id="notes" class="panel">
+        <h2>Cellar notes</h2>
+        <p class="small">A shortlist of what I am opening this month.</p>
+        <ul id="cellarNotes"></ul>
       </section>
 
-      <section id="legal" class="panel">
-        <h2>Legal & compliance</h2>
+      <section id="subscribe" class="panel">
+        <h2>Subscribe to the newsletter</h2>
+        <p>One thoughtful email every Friday with a featured bottle, cheese, and pairing story.</p>
 
-        <article>
-          <h3>Food handling (perishable cheese)</h3>
-          <ul>
-            <li>Maintain Certificate of Acceptability requirements for food handling.</li>
-            <li>Apply hygiene controls to storage, pack stations, and transport chain.</li>
-            <li>Follow ingredient + date/batch labelling obligations.</li>
-          </ul>
-        </article>
+        <form id="subscribeForm" class="stack">
+          <label>Your email
+            <input type="email" name="email" placeholder="you@example.com" required />
+          </label>
+          <button type="submit">Subscribe</button>
+        </form>
 
-        <article>
-          <h3>Terms & Conditions</h3>
-          <p>Monthly subscriptions auto-renew. Skip/pause/cancel changes apply from the next bill cycle before cut-off dates. Cold-chain delivery attempts require recipient availability.</p>
-          <h3>Privacy (POPIA)</h3>
-          <p>We process contact, address, preference, and order data to fulfill memberships. Members may request updates or deletion where lawful.</p>
-          <h3>Returns</h3>
-          <p>Perishable products are non-returnable unless damaged, unsafe, or incorrect on delivery. Report issues within 24 hours.</p>
-        </article>
-
-        <p class="small">Wine pairing details and AI recommendations are informational and not a substitute for professional advice.</p>
+        <p id="subscribeStatus" class="small">No subscription yet.</p>
       </section>
     </main>
 
     <footer>
-      <p>Fromage Society SA • Starter Cheese Club PWA</p>
+      <p>Cellar & Rind • Personal blog by a curious wine and cheese enthusiast</p>
     </footer>
 
     <script type="module" src="app.js"></script>
