@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#111827" />
+    <meta name="description" content="Fromage Society SA mobile progressive web app for cheese and wine memberships." />
+    <title>Fromage Society SA</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="assets/icon-192.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="brand">Fromage Society SA</p>
+        <h1>Cheese & Wine Club</h1>
+      </div>
+      <button id="installBtn" class="secondary" hidden>Install</button>
+    </header>
+
+    <nav class="tabs" aria-label="Main sections">
+      <a href="#home">Home</a>
+      <a href="#membership">Membership</a>
+      <a href="#this-month">This Month</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#account">Account</a>
+      <a href="#admin">Admin</a>
+      <a href="#legal">Legal</a>
+    </nav>
+
+    <main>
+      <section id="home" class="panel hero">
+        <h2>A monthly cheese ritual, built for South Africa.</h2>
+        <p>Start with Cape Town + Winelands delivery, run monthly cadence, and scale with cold-chain logistics and compliance-first operations.</p>
+        <div class="chips">
+          <span>3 membership tiers</span>
+          <span>Recurring-ready payments</span>
+          <span>Static GitHub hosting</span>
+          <span>PWA install + offline</span>
+        </div>
+      </section>
+
+      <section id="membership" class="panel">
+        <div class="section-heading">
+          <h2>Membership tiers</h2>
+          <p>Customers self-segment with clear value and price anchors.</p>
+        </div>
+        <div id="plansGrid" class="grid"></div>
+      </section>
+
+      <section id="this-month" class="panel">
+        <div class="section-heading">
+          <h2>This month’s box</h2>
+          <p>Built using hero / crowd pleaser / wildcard framework.</p>
+        </div>
+        <article class="month-box">
+          <h3 id="boxTitle"></h3>
+          <ul id="boxItems"></ul>
+        </article>
+      </section>
+
+      <section id="how-it-works" class="panel">
+        <h2>How it works</h2>
+        <ol>
+          <li>Choose tier: Cheese Club, Cheese + Wine Club, or Cellar Select.</li>
+          <li>Set preferences: red / white / mixed, cheese style, allergens.</li>
+          <li>Add delivery details and subscribe via SA recurring gateway.</li>
+          <li>Receive monthly chilled delivery with tasting + pairing notes.</li>
+          <li>Manage skip, pause, upgrade, gifting, and address updates anytime.</li>
+        </ol>
+        <h3>Payments (SA recurring options)</h3>
+        <p>Recommended providers: PayFast Subscriptions, Peach Payments recurring, or Paystack recurring APIs.</p>
+        <h3>Launch path to reduce risk</h3>
+        <p>Launch Cheese Club first (non-alcohol fulfilment), then add licensed wine partner add-ons before taking in-house liquor operations.</p>
+      </section>
+
+      <section id="faq" class="panel">
+        <h2>FAQ</h2>
+        <details><summary>Can I skip or pause?</summary><p>Yes, before billing date in Account. Pause updates <code>pause_until</code>.</p></details>
+        <details><summary>Can I gift membership?</summary><p>Yes, gift one month from the member portal actions.</p></details>
+        <details><summary>What about allergens?</summary><p>Set allergen preferences; every monthly box also includes ingredient labeling references.</p></details>
+        <details><summary>How is age verification handled?</summary><p>Wine options require 18+ attestation at checkout and ID check on delivery.</p></details>
+      </section>
+
+      <section id="account" class="panel">
+        <h2>Account & subscription</h2>
+        <form id="subscriptionForm" class="stack">
+          <label>Membership plan
+            <select name="plan" required></select>
+          </label>
+          <label>Wine preference
+            <select name="wine_pref">
+              <option value="mixed">Mixed</option>
+              <option value="red">Red month</option>
+              <option value="white">White month</option>
+            </select>
+          </label>
+          <label>Cheese preference
+            <input type="text" name="cheese_pref" placeholder="e.g. goat friendly, no blue" />
+          </label>
+          <label>Allergens
+            <input type="text" name="allergens" placeholder="e.g. gluten, nuts" />
+          </label>
+          <label>Address
+            <textarea name="address" required placeholder="Street, suburb, city, postal code"></textarea>
+          </label>
+          <label class="inline">
+            <input type="checkbox" name="age18" required />
+            I confirm I am 18+ for any alcohol-related options.
+          </label>
+          <button type="submit">Start subscription</button>
+        </form>
+
+        <div class="actions">
+          <button data-action="skip" type="button">Skip next month</button>
+          <button data-action="pause" type="button">Pause 1 month</button>
+          <button data-action="upgrade" type="button">Upgrade to Cellar Select</button>
+          <button data-action="address" type="button">Change address</button>
+          <button data-action="gift" type="button">Gift one month</button>
+          <button data-action="cancel" type="button">Cancel subscription</button>
+        </div>
+
+        <h3>Current subscription JSON</h3>
+        <pre id="subscriptionView">No subscription yet.</pre>
+      </section>
+
+      <section id="admin" class="panel">
+        <h2>Admin tools</h2>
+        <div class="admin-grid">
+          <form id="boxBuilder" class="stack">
+            <h3>Build this month’s box</h3>
+            <label>Month label
+              <input type="text" name="month" placeholder="e.g. April 2026" required />
+            </label>
+            <label>Items (one per line)
+              <textarea name="items" placeholder="Hero: ...&#10;Crowd pleaser: ...&#10;Wildcard: ..." required></textarea>
+            </label>
+            <button type="submit">Save monthly box</button>
+          </form>
+
+          <div class="stack">
+            <h3>Operations exports</h3>
+            <button id="packingListBtn" type="button">Export packing list CSV</button>
+            <button id="labelsBtn" type="button">Export delivery labels CSV</button>
+            <a id="downloadLink" hidden></a>
+
+            <h3>Member segmentation</h3>
+            <ul id="segments"></ul>
+
+            <h3>Churn dashboard</h3>
+            <p id="churnSummary">No data yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="legal" class="panel">
+        <h2>Legal & compliance</h2>
+
+        <article>
+          <h3>Liquor (if wine is included)</h3>
+          <ul>
+            <li>Use valid provincial off-consumption liquor licensing.</li>
+            <li>Ensure online/telephone fulfilment rules align with licence conditions.</li>
+            <li>Record invoices, deliver to invoiced address, retain records.</li>
+            <li>Enforce 18+ verification and delivery ID checks.</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Food handling (perishable cheese)</h3>
+          <ul>
+            <li>Maintain Certificate of Acceptability requirements for food handling.</li>
+            <li>Apply hygiene controls to storage, pack stations, and transport chain.</li>
+            <li>Follow ingredient + date/batch labelling obligations.</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Terms & Conditions</h3>
+          <p>Monthly subscriptions auto-renew. Skip/pause/cancel changes apply from the next bill cycle before cut-off dates. Cold-chain delivery attempts require recipient availability.</p>
+          <h3>Privacy (POPIA)</h3>
+          <p>We process contact, address, preference, and order data to fulfill memberships. Members may request updates or deletion where lawful.</p>
+          <h3>Returns</h3>
+          <p>Perishable products are non-returnable unless damaged, unsafe, or incorrect on delivery. Report issues within 24 hours.</p>
+        </article>
+
+        <p class="small">Informational content only and not legal advice; verify with legal counsel and provincial regulators.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p>Fromage Society SA • Static PWA deployable on GitHub Pages</p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
