@@ -1,4 +1,4 @@
-const CACHE = "cellar-rind-pwa-v1";
+const CACHE = "cheesemonger-atlas-v3";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./assets/icon-192.svg", "./assets/icon-512.svg"];
 
 self.addEventListener("install", (e) => {
