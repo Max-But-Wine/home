@@ -1,11 +1,11 @@
 {
-  "name": "Cellar & Rind",
-  "short_name": "CellarRind",
+  "name": "Cheesemonger Atlas",
+  "short_name": "CheeseAtlas",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f9f6f1",
-  "theme_color": "#6b2f2f",
-  "description": "A personal wine and cheese blog with pairing notes and cellar stories.",
+  "background_color": "#faf6f0",
+  "theme_color": "#7f4b16",
+  "description": "Cheesemonger Atlas ingests Excel, PDF, and Word docs to power hybrid semantic + keyword cheese search.",
   "icons": [
     {
       "src": "assets/icon-192.svg",
